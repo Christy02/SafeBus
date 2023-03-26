@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'login.dart';
 import 'notice.dart';
 
@@ -31,6 +32,15 @@ class _DriverPageState extends State<DriverPage> {
                 size: 30,
               ))
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          print('Sending alert');
+          Fluttertoast.showToast(
+              msg: 'Sending alert', backgroundColor: Colors.red);
+        },
+        backgroundColor: Color.fromARGB(255, 221, 10, 10),
+        child: const Icon(Icons.bus_alert_rounded, size: 30),
       ),
       body: Column(
         children: <Widget>[
@@ -101,42 +111,7 @@ class _DriverPageState extends State<DriverPage> {
             ),
           ),
           const SizedBox(
-            height: 50,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 25,
-              right: 25,
-            ),
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: Colors.white70,
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: 30,
-                      horizontal: 130,
-                    )),
-                onPressed: () {
-                  Route route =
-                      MaterialPageRoute(builder: (context) => NoticePage());
-                  Navigator.push(context, route);
-                },
-                child: const Text(
-                  'Chat',
-                  style: TextStyle(
-                    letterSpacing: 1.5,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'OpenSans',
-                    color: Color.fromARGB(255, 117, 154, 255),
-                  ),
-                )),
-          ),
-          const SizedBox(
-            height: 50,
+            height: 70,
           ),
           Padding(
             padding: const EdgeInsets.only(
@@ -160,7 +135,7 @@ class _DriverPageState extends State<DriverPage> {
                   Navigator.push(context, route);
                 },
                 child: const Text(
-                  'Mark Attendence',
+                  'Mark Attendance',
                   style: TextStyle(
                     letterSpacing: 1.5,
                     fontSize: 18.0,
@@ -171,7 +146,7 @@ class _DriverPageState extends State<DriverPage> {
                 )),
           ),
           SizedBox(
-            height: 91,
+            height: 203,
           ),
           Positioned(
             bottom: 0,
