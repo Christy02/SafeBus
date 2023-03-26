@@ -40,34 +40,24 @@ class _DriverPageState extends State<DriverPage> {
           child: Row(
             children: <Widget>[
               RaisedButton(
-                padding: EdgeInsets.all(30),
-                onPressed: () {
-                  Route route =
-                      MaterialPageRoute(builder: (context) => LoginPage());
-                  Navigator.push(context, route);
-                },
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  child: Text(
-                    "Minion",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+                  padding: EdgeInsets.all(50),
+                  onPressed: () {
+                    Route route =
+                        MaterialPageRoute(builder: (context) => LoginPage());
+                    Navigator.push(context, route);
+                  },
+                  child: const Text('Notices')),
+              const SizedBox(
+                width: 20,
               ),
               RaisedButton(
-                padding: EdgeInsets.all(30),
-                onPressed: () {
-                  Route route =
-                      MaterialPageRoute(builder: (context) => LoginPage());
-                  Navigator.push(context, route);
-                },
-                child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    child: Text(
-                      "Emoji",
-                      textAlign: TextAlign.center,
-                    )),
-              ),
+                  padding: EdgeInsets.all(50),
+                  onPressed: () {
+                    Route route =
+                        MaterialPageRoute(builder: (context) => LoginPage());
+                    Navigator.push(context, route);
+                  },
+                  child: const Text('  Chat   ')),
             ],
           ),
         ),
