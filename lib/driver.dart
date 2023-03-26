@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'login.dart';
+
 class DriverPage extends StatefulWidget {
   const DriverPage({Key? key}) : super(key: key);
 
@@ -10,6 +12,66 @@ class DriverPage extends StatefulWidget {
 class _DriverPageState extends State<DriverPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Driver'),
+        backgroundColor: Color.fromARGB(255, 117, 154, 255),
+        actions: <Widget>[
+          IconButton(
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              },
+              icon: const Icon(
+                Icons.directions_bus_filled_sharp,
+                size: 30,
+              ))
+        ],
+      ),
+      body: Container(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: 100,
+            left: 20,
+            right: 20,
+          ),
+          child: Row(
+            children: <Widget>[
+              RaisedButton(
+                padding: EdgeInsets.all(30),
+                onPressed: () {
+                  Route route =
+                      MaterialPageRoute(builder: (context) => LoginPage());
+                  Navigator.push(context, route);
+                },
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  child: Text(
+                    "Minion",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              RaisedButton(
+                padding: EdgeInsets.all(30),
+                onPressed: () {
+                  Route route =
+                      MaterialPageRoute(builder: (context) => LoginPage());
+                  Navigator.push(context, route);
+                },
+                child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    child: Text(
+                      "Emoji",
+                      textAlign: TextAlign.center,
+                    )),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

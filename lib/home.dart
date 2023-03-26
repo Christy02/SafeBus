@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:safebus/components/background.dart';
-import 'package:safebus/PLogin.dart';
-import 'package:safebus/DLogin.dart';
-import 'package:safebus/ALogin.dart';
+import 'package:safebus/login.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -46,8 +43,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () async {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const ParentLogin()),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 },
                 child: const Text(
@@ -67,8 +63,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () async {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const DriverLogin()),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 },
                 child: const Text(
@@ -88,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AdminLogin()),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 },
                 child: const Text(

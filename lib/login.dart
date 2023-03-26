@@ -1,16 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:safebus/admin.dart';
+import 'package:safebus/driver.dart';
 import 'package:safebus/parent.dart';
 
-class ParentLogin extends StatefulWidget {
-  const ParentLogin({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<ParentLogin> createState() => _LoginState();
+  State<LoginPage> createState() => _LoginState();
 }
 
-class _LoginState extends State<ParentLogin> {
+class _LoginState extends State<LoginPage> {
   bool _isObcscure = true;
   //form key
   final _formKey = GlobalKey<FormState>();
@@ -237,8 +239,21 @@ class _LoginState extends State<ParentLogin> {
             .signInWithEmailAndPassword(email: email, password: password)
             .then((uid) => {
                   Fluttertoast.showToast(msg: "Login Successful"),
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const ParentPage())),
+                  if (email.substring(0, 6) == 'driver')
+                    {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const DriverPage())),
+                    }
+                  else if (email.substring(0, 5) == 'admin')
+                    {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const AdminPage())),
+                    }
+                  else
+                    {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const ParentPage())),
+                    }
                 });
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
