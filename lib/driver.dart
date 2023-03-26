@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'login.dart';
+import 'notice.dart';
 
 class DriverPage extends StatefulWidget {
   const DriverPage({Key? key}) : super(key: key);
@@ -12,7 +12,9 @@ class DriverPage extends StatefulWidget {
 class _DriverPageState extends State<DriverPage> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Driver'),
         backgroundColor: Color.fromARGB(255, 117, 154, 255),
@@ -30,37 +32,153 @@ class _DriverPageState extends State<DriverPage> {
               ))
         ],
       ),
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            top: 100,
-            left: 20,
-            right: 20,
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 100,
+              left: 25,
+              right: 25,
+            ),
+            child: Row(
+              children: <Widget>[
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.white70,
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 50,
+                          horizontal: 40,
+                        )),
+                    onPressed: () {
+                      Route route =
+                          MaterialPageRoute(builder: (context) => NoticePage());
+                      Navigator.push(context, route);
+                    },
+                    child: const Text(
+                      'Notices',
+                      style: TextStyle(
+                        letterSpacing: 1.5,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'OpenSans',
+                        color: Color.fromARGB(255, 117, 154, 255),
+                      ),
+                    )),
+                const SizedBox(
+                  width: 20,
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.white70,
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 50,
+                          horizontal: 50,
+                        )),
+                    onPressed: () {
+                      Route route =
+                          MaterialPageRoute(builder: (context) => NoticePage());
+                      Navigator.push(context, route);
+                    },
+                    child: const Text(
+                      'Chat',
+                      style: TextStyle(
+                        letterSpacing: 1.5,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'OpenSans',
+                        color: Color.fromARGB(255, 117, 154, 255),
+                      ),
+                    )),
+              ],
+            ),
           ),
-          child: Row(
-            children: <Widget>[
-              RaisedButton(
-                  padding: EdgeInsets.all(50),
-                  onPressed: () {
-                    Route route =
-                        MaterialPageRoute(builder: (context) => LoginPage());
-                    Navigator.push(context, route);
-                  },
-                  child: const Text('Notices')),
-              const SizedBox(
-                width: 20,
-              ),
-              RaisedButton(
-                  padding: EdgeInsets.all(50),
-                  onPressed: () {
-                    Route route =
-                        MaterialPageRoute(builder: (context) => LoginPage());
-                    Navigator.push(context, route);
-                  },
-                  child: const Text('  Chat   ')),
-            ],
+          const SizedBox(
+            height: 50,
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 25,
+              right: 25,
+            ),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.white70,
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 30,
+                      horizontal: 130,
+                    )),
+                onPressed: () {
+                  Route route =
+                      MaterialPageRoute(builder: (context) => NoticePage());
+                  Navigator.push(context, route);
+                },
+                child: const Text(
+                  'Chat',
+                  style: TextStyle(
+                    letterSpacing: 1.5,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'OpenSans',
+                    color: Color.fromARGB(255, 117, 154, 255),
+                  ),
+                )),
+          ),
+          const SizedBox(
+            height: 50,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 25,
+              right: 25,
+            ),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.white70,
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 30,
+                      horizontal: 75,
+                    )),
+                onPressed: () {
+                  Route route =
+                      MaterialPageRoute(builder: (context) => NoticePage());
+                  Navigator.push(context, route);
+                },
+                child: const Text(
+                  'Mark Attendence',
+                  style: TextStyle(
+                    letterSpacing: 1.5,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'OpenSans',
+                    color: Color.fromARGB(255, 117, 154, 255),
+                  ),
+                )),
+          ),
+          SizedBox(
+            height: 91,
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Image.asset("assets/bottom2.png", width: size.width),
+          ),
+        ],
       ),
     );
   }
