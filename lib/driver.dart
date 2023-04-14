@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:safebus/chat.dart';
 import 'login.dart';
 import 'notice.dart';
 
@@ -94,7 +95,7 @@ class _DriverPageState extends State<DriverPage> {
                         )),
                     onPressed: () {
                       Route route =
-                          MaterialPageRoute(builder: (context) => NoticePage());
+                          MaterialPageRoute(builder: (context) => ChatScreen());
                       Navigator.push(context, route);
                     },
                     child: const Text(

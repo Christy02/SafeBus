@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:safebus/chat.dart';
 import 'package:safebus/location.dart';
 import 'package:safebus/notice.dart';
 
@@ -51,6 +52,23 @@ class _ParentPageState extends State<ParentPage> {
             icon: Icon(Icons.message),
             label: Text(
               'Notice',
+              style: TextStyle(fontSize: 18),
+            ),
+            style: ElevatedButton.styleFrom(
+              primary: Color.fromARGB(255, 116, 154, 255),
+              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 100),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChatScreen()),
+              );
+            },
+            icon: Icon(Icons.people),
+            label: Text(
+              'Chat',
               style: TextStyle(fontSize: 18),
             ),
             style: ElevatedButton.styleFrom(
