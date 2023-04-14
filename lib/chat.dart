@@ -11,37 +11,13 @@ class _ChatScreenState extends State<ChatScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _textController = TextEditingController();
-  late String _currentTime;
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentTime();
-  }
-
-  void _getCurrentTime() {
-    final now = DateTime.now();
-    final time = TimeOfDay.fromDateTime(now);
-    setState(() {
-      _currentTime = '${time.hour}:${time.minute}';
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Group Chat'),
+        title: Text('Chat'),
         backgroundColor: Color.fromARGB(255, 116, 154, 255),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () async {
-              await _auth.signOut();
-              Navigator.pop(context);
-            },
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -64,7 +40,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemBuilder: (BuildContext context, int index) {
                     DocumentSnapshot document =
                         snapshot.data?.docs[index] as DocumentSnapshot<Object?>;
-                    return _buildMessage(document['message'],
+                    return _buildMessage(
+                        document['message'],
+                        document['timestamp'],
+                        document['user'],
                         document['user'] == _auth.currentUser?.email);
                   },
                 );
@@ -111,7 +90,8 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _buildMessage(String message, bool isMe) {
+  Widget _buildMessage(
+      String message, Timestamp timestamp, String user, bool isMe) {
     final radius = Radius.circular(20.0);
     final borderRadius = BorderRadius.only(
       topLeft: radius,
@@ -121,28 +101,43 @@ class _ChatScreenState extends State<ChatScreen> {
     );
     final alignment = isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start;
     final textStyle = TextStyle(color: Colors.white);
+    DateTime dateTime = timestamp.toDate();
+    String date =
+        '${dateTime.day}.${dateTime.month}.${dateTime.year}   ${dateTime.hour}:${dateTime.minute}';
 
+    String name = user.split('@')[0];
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
       child: Column(
         crossAxisAlignment: alignment,
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(
-              color: isMe
-                  ? Theme.of(context).accentColor
-                  : Color.fromARGB(255, 127, 124, 124),
-              borderRadius: borderRadius,
-            ),
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-            child: Text(
-              message,
-              style: textStyle,
-            ),
-          ),
-          SizedBox(height: 5.0),
+              decoration: BoxDecoration(
+                color: isMe
+                    ? Color.fromARGB(255, 176, 196, 249)
+                    : Color.fromARGB(255, 214, 213, 218),
+                borderRadius: borderRadius,
+              ),
+              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+              child: Column(children: [
+                Text(
+                  name[0].toUpperCase() + name.substring(1),
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 84, 80, 80),
+                      fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  message,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                  ),
+                ),
+              ])),
+          SizedBox(height: 10.0),
           Text(
-            '$_currentTime',
+            date,
             style: TextStyle(color: Colors.grey),
           ),
         ],
