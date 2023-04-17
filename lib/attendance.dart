@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class AttendancePage extends StatefulWidget {
   @override
@@ -15,7 +15,8 @@ class _AttendancePageState extends State<AttendancePage> {
   ]; // Replace with your own student IDs
   Map<String, bool> _attendanceMap = {};
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -24,6 +25,13 @@ class _AttendancePageState extends State<AttendancePage> {
     for (String studentId in _studentIds) {
       _attendanceMap[studentId] = false;
     }
+    // Configure the notification plugin
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    _flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   void _markAttendance() async {
@@ -37,20 +45,16 @@ class _AttendancePageState extends State<AttendancePage> {
     }
 
     // Send push notification to teacher
-    String? token = await _firebaseMessaging.getToken();
-    if (token != null) {
-      /*_firebaseMessaging.send(
-        to: token,
-        notification: Notification(
-          title: 'Attendance marked!',
-          body: 'Attendance has been marked for all students.',
-        ),
-        data: {
-          'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-          'screen': 'attendance',
-        },
-      );*/
-    }
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'channel_id', 'channel_name', 'channel_description',
+        importance: Importance.max, priority: Priority.high, ticker: 'ticker');
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
+    await _flutterLocalNotificationsPlugin.show(0, 'Attendance marked!',
+        'Student entered the bus', platformChannelSpecifics,
+        payload: 'attendance');
 
     // Show success dialog
     showDialog(
@@ -58,7 +62,7 @@ class _AttendancePageState extends State<AttendancePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Attendance Marked'),
-          content: Text('Attendance has been marked for all students.'),
+          content: Text('Student entered the bus'),
           actions: [
             FlatButton(
               child: Text('OK'),
