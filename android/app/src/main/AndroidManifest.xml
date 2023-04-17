@@ -4,6 +4,9 @@
         android:label="SafeBus"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAQxdcZ2D1qtmlekqxBM-G5nBv1hxtB73k"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

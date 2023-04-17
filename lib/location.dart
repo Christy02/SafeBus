@@ -9,6 +9,27 @@ class LocationPage extends StatefulWidget {
 }
 
 class _LocationPageState extends State<LocationPage> {
+  late GoogleMapController mapController;
+  final LatLng _center = const LatLng(8.4705, 76.9794);
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
+
+  Set<Marker> _createMarker() {
+    return <Marker>[
+      Marker(
+        markerId: MarkerId('myMarker'),
+        position: LatLng(8.4705, 76.9794),
+        infoWindow: InfoWindow(
+          title: 'SCTCE',
+          snippet: 'college',
+        ),
+        icon: BitmapDescriptor.defaultMarker,
+      ),
+    ].toSet();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -214,6 +235,14 @@ class _LocationPageState extends State<LocationPage> {
             ),
           ],
         ),
+      ),
+      body: GoogleMap(
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: _center,
+          zoom: 15,
+        ),
+        markers: _createMarker(),
       ),
     );
   }
