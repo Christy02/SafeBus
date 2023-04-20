@@ -1,9 +1,6 @@
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
 class AttendancePage extends StatefulWidget {
@@ -57,7 +54,7 @@ class _AttendancePageState extends State<AttendancePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User List'),
+        title: Text('Attendance'),
         backgroundColor: Color.fromARGB(255, 117, 154, 255),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -79,9 +76,16 @@ class _AttendancePageState extends State<AttendancePage> {
             itemBuilder: (context, index) {
               final user = users[index];
               bool isChecked = user['attendance'] ?? false;
+              String name = user.id.split('@')[0];
+              String busStop = user['busStop'];
 
-              return ListTile(
-                title: Text(user.id),
+              return Card(
+                  child: ListTile(
+                title: Text(
+                  name[0].toUpperCase() + name.substring(1),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text("Bus Stop: $busStop"),
                 trailing: Checkbox(
                   value:
                       isChecked, // You can set the initial value of the checkbox here
@@ -106,7 +110,7 @@ class _AttendancePageState extends State<AttendancePage> {
                     }
                   },
                 ),
-              );
+              ));
             },
           );
         },
