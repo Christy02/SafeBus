@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:safebus/chat.dart';
 import 'package:safebus/location.dart';
@@ -11,6 +14,39 @@ class ParentPage extends StatefulWidget {
 }
 
 class _ParentPageState extends State<ParentPage> {
+  String? _deviceToken;
+  String? _userId;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Obtain the user's device token and save it to Firestore
+    _saveDeviceTokenToFirestore();
+  }
+
+  void _saveDeviceTokenToFirestore() async {
+    // Obtain the current user's UID
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final String? uid = currentUser!.email;
+    NotificationSettings settings =
+        await FirebaseMessaging.instance.requestPermission();
+
+    // Obtain the user's device token
+    String? token = await FirebaseMessaging.instance.getToken();
+
+    // Save the device token to Firestore under the current user's document
+
+    setState(() {
+      _deviceToken = token;
+      _userId = uid;
+    });
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .update({'deviceToken': token});
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

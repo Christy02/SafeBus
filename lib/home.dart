@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:safebus/components/background.dart';
+import 'package:safebus/local_push_notification.dart';
 import 'package:safebus/login.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,6 +14,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   get margin => null;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseMessaging.instance.getInitialMessage();
+    FirebaseMessaging.onMessage.listen((event) {
+      LocalNotificationService.display(event);
+    });
+    //storeNotificationToken();
+
+    FirebaseMessaging.instance.subscribeToTopic('subscription');
+  }
 
   @override
   Widget build(BuildContext context) {
