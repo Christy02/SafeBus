@@ -38,7 +38,7 @@ class _AttendancePageState extends State<AttendancePage> {
               body: jsonEncode(<String, dynamic>{
                 'notification': <String, dynamic>{
                   'title': title,
-                  'body': 'Student presence on the bus has been marked'
+                  'body': "Your ward's attendance status marked"
                 },
                 'priority': 'high',
                 'data': data,
@@ -58,6 +58,7 @@ class _AttendancePageState extends State<AttendancePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('User List'),
+        backgroundColor: Color.fromARGB(255, 117, 154, 255),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('users').snapshots(),

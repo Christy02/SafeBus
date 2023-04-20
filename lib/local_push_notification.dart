@@ -33,7 +33,7 @@ class LocalNotificationService {
       await _flutterLocalNotificationsPlugin.show(
         id,
         message.notification!.title,
-        'Student attendance status marked',
+        message.notification!.body,
         notificationDetails,
       );
     } on Exception catch (e) {

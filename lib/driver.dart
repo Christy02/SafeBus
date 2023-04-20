@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:safebus/bus.dart';
 import 'package:safebus/chat.dart';
 import 'attendance.dart';
 import 'login.dart';
 import 'notice.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 class DriverPage extends StatefulWidget {
   const DriverPage({Key? key}) : super(key: key);
@@ -16,6 +17,54 @@ class DriverPage extends StatefulWidget {
 }
 
 class _DriverPageState extends State<DriverPage> {
+  sendNotification(String title, String token) async {
+    final data = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': '1',
+      'status': 'done',
+      'message': title,
+    };
+
+    try {
+      http.Response response =
+          await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+              headers: <String, String>{
+                'Content-Type': 'application/json',
+                'Authorization':
+                    'key=AAAAhkfrH3g:APA91bF5Q4L0Ixha0d_6gpPclFAsFByNqHVrsVFd_vIKrHjmqXG1oMZIA_74t-ElAvn5c0LQw8XxBsbRGnz3BrZboymDCv94qBwBV-GGjzb-q4BqcSbpmEUK00Rsw4DwXy8ojEZgoZmm'
+              },
+              body: jsonEncode(<String, dynamic>{
+                'notification': <String, dynamic>{
+                  'title': title,
+                  'body': 'Emergency Situation Alert'
+                },
+                'priority': 'high',
+                'data': data,
+                'to': '$token'
+              }));
+
+      if (response.statusCode == 200) {
+        print("Yeh notificatin is sended");
+      } else {
+        print("Error");
+      }
+    } catch (e) {}
+  }
+
+  int _tapCount = 0;
+  void _handleTap() {
+    setState(() {
+      _tapCount++;
+      if (_tapCount > 2) {
+        print('Sending alert');
+        Fluttertoast.showToast(
+            msg: 'Sending alert', backgroundColor: Colors.red);
+        sendNotification('ALERT!!!',
+            'ffqhfLsZRm-RszIyJI3QBY:APA91bFDtPaYGfiiNUlYDnPLMZLYV5Xn6MZONqVTE60-NSjdpFb9WdPAbrWHj2PQdaie2ibrjl281GBpoZnronGzFJt7PmvoQyrpF4iCFjZMlimb3i8ekk-65YzZfH4PwQgBX4rr9PYI');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -29,7 +78,7 @@ class _DriverPageState extends State<DriverPage> {
               onPressed: () async {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => const BusPage()),
                 );
               },
               icon: const Icon(
@@ -39,12 +88,9 @@ class _DriverPageState extends State<DriverPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print('Sending alert');
-          Fluttertoast.showToast(
-              msg: 'Sending alert', backgroundColor: Colors.red);
-        },
-        backgroundColor: Color.fromARGB(255, 221, 10, 10),
+        onPressed: _handleTap,
+        backgroundColor:
+            _tapCount > 2 ? Color.fromARGB(255, 221, 10, 10) : Colors.green,
         child: const Icon(Icons.bus_alert_rounded, size: 30),
       ),
       body: Column(

@@ -5,7 +5,10 @@ import 'package:safebus/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:safebus/local_push_notification.dart';
 
-Future<void> _firebaseMessageBackgroundHandler(RemoteMessage message) async {}
+Future<void> _firebaseMessageBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
