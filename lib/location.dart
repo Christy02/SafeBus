@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class LocationPage extends StatefulWidget {
   const LocationPage({Key? key}) : super(key: key);
@@ -8,12 +12,54 @@ class LocationPage extends StatefulWidget {
   State<LocationPage> createState() => _LocationPageState();
 }
 
+class DirectionsService {
+  static const String _baseUrl =
+      'https://maps.googleapis.com/maps/api/directions/json';
+
+  final String apiKey;
+
+  DirectionsService({required this.apiKey});
+
+  Future<int> getTravelTimeWithTrafficAndWaypoints(
+      String origin, String destination, List<String> waypoints) async {
+    //final originStr = '${origin.latitude},${origin.longitude}';
+    final url =
+        '$_baseUrl?units=imperial&origin=$origin&destination=$destination&key=$apiKey&waypoints=${waypoints.join('|')}&departure_time=now&traffic_model=best_guess';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      if (jsonResponse['status'] == 'OK') {
+        print('devika:$jsonResponse');
+        final routes = jsonResponse['routes'] as List<dynamic>;
+        final legs = routes[0]['legs'] as List<dynamic>;
+        final waypointsLegs = legs.sublist(0, legs.length - 1);
+        final totalDurationInSeconds = waypointsLegs.fold<int>(
+            0,
+            (prev, leg) =>
+                prev +
+                (leg['duration_in_traffic'] != null
+                    ? leg['duration_in_traffic']['value'] as int
+                    : leg['duration']['value'] as int));
+        return totalDurationInSeconds;
+      } else {
+        final errorMessage = jsonResponse['error_message'];
+        throw Exception('Error calculating ETA: $errorMessage');
+      }
+    } else {
+      throw Exception('Error fetching directions');
+    }
+  }
+}
+
 class _LocationPageState extends State<LocationPage> {
   late GoogleMapController mapController;
   final LatLng _center = const LatLng(8.4705, 76.9794);
 
   void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+    setState(() {
+      mapController = controller;
+    });
   }
 
   Set<Marker> _createMarker() {
@@ -29,6 +75,9 @@ class _LocationPageState extends State<LocationPage> {
       ),
     ].toSet();
   }
+
+  final directionsService =
+      DirectionsService(apiKey: 'AIzaSyAQxdcZ2D1qtmlekqxBM-G5nBv1hxtB73k');
 
   @override
   Widget build(BuildContext context) {
@@ -278,14 +327,144 @@ class _LocationPageState extends State<LocationPage> {
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        child: Container(
+          height: 100.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  try {
+                    final currentUser = FirebaseAuth.instance.currentUser;
+                    final String? uid = currentUser!.email;
+                    final DocumentSnapshot doc = await FirebaseFirestore
+                        .instance
+                        .collection('users')
+                        .doc(uid)
+                        .get();
+
+                    final DocumentSnapshot doc2 = await FirebaseFirestore
+                        .instance
+                        .collection('current_loc')
+                        .doc('v6DWAYpFW1SJhUPCK3Lk')
+                        .get();
+
+                    final String origin = doc2['last_stop'];
+                    final String destination = doc['busStop'];
+
+                    final travelTime = await directionsService
+                        .getTravelTimeWithTrafficAndWaypoints(
+                            origin, // origin
+                            destination, // destination
+                            [
+                          'Palayam,KL',
+                        ]);
+                    print('Travel time: ${travelTime ~/ 60} minutes');
+                    showReview(context, travelTime);
+                  } catch (e) {
+                    print("error calculating eta $e");
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 117, 154, 255),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 20,
+                      horizontal: 20,
+                    )),
+                child: Text('Estimated Time of Arrival'),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(
           target: _center,
           zoom: 15,
         ),
+        mapType: MapType.normal,
         markers: _createMarker(),
       ),
     );
   }
+}
+
+showReview(context, review) {
+  return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            child: Container(
+                height: 350.0,
+                width: 200.0,
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+                child: Column(
+                  children: <Widget>[
+                    Stack(
+                      children: <Widget>[
+                        Container(height: 150.0),
+                        Container(
+                          height: 100.0,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10.0),
+                                topRight: Radius.circular(10.0),
+                              ),
+                              color: Color.fromARGB(255, 117, 154, 255)),
+                        ),
+                        Positioned(
+                            top: 50.0,
+                            left: 94.0,
+                            child: Container(
+                              height: 90.0,
+                              width: 90.0,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(45.0),
+                                  border: Border.all(
+                                      color: Colors.white,
+                                      style: BorderStyle.solid,
+                                      width: 2.0),
+                                  image: DecorationImage(
+                                      image: AssetImage('assets/main.png'),
+                                      fit: BoxFit.contain)),
+                            ))
+                      ],
+                    ),
+                    SizedBox(height: 20.0),
+                    Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text(
+                          '${review ~/ 60} minutes',
+                          style: TextStyle(
+                            fontFamily: 'Quicksand',
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )),
+                    SizedBox(height: 15.0),
+                    FlatButton(
+                        child: Center(
+                          child: Text(
+                            'OKAY',
+                            style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontSize: 14.0,
+                                color: Color.fromARGB(255, 117, 154, 255)),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        color: Colors.transparent)
+                  ],
+                )));
+      });
 }
