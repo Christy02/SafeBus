@@ -22,15 +22,27 @@ class DirectionsService {
 
   Future<int> getTravelTimeWithTrafficAndWaypoints(
       String origin, String destination, List<String> waypoints) async {
-    //final originStr = '${origin.latitude},${origin.longitude}';
+    // Validate each waypoint using the Geocoding API
+    for (String waypoint in waypoints) {
+      final url =
+          'https://maps.googleapis.com/maps/api/geocode/json?address=$waypoint&key=$apiKey';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode != 200) {
+        throw Exception('Error geocoding waypoint $waypoint');
+      }
+      final jsonResponse = json.decode(response.body);
+      if (jsonResponse['status'] != 'OK') {
+        throw Exception('Invalid waypoint address: $waypoint');
+      }
+    }
+
     final url =
         '$_baseUrl?units=imperial&origin=$origin&destination=$destination&key=$apiKey&waypoints=${waypoints.join('|')}&departure_time=now&traffic_model=best_guess';
     final response = await http.get(Uri.parse(url));
-
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
+      print(jsonResponse);
       if (jsonResponse['status'] == 'OK') {
-        print('devika:$jsonResponse');
         final routes = jsonResponse['routes'] as List<dynamic>;
         final legs = routes[0]['legs'] as List<dynamic>;
         final waypointsLegs = legs.sublist(0, legs.length - 1);
@@ -354,18 +366,46 @@ class _LocationPageState extends State<LocationPage> {
 
                     final String origin = doc2['last_stop'];
                     final String destination = doc['busStop'];
+                    List<String> valuesBetween = [origin, destination];
 
+                    print("Origin is $origin");
+                    print("Destination is $destination");
+
+                    // Get a reference to the document
+                    DocumentReference docRef = FirebaseFirestore.instance
+                        .collection('bus_schedule')
+                        .doc('kYPgYcdkRLFfPRmw2Qci');
+                    // Get the document data
+                    DocumentSnapshot snapshot = await docRef.get();
+                    List<dynamic> fieldOrder = snapshot.get('fieldOrder');
+                    Map<String, dynamic> fields =
+                        snapshot.data()! as Map<String, dynamic>;
+                    List<String> sortedFields = fieldOrder
+                        .map((field) => fields[field].toString())
+                        .toList();
+                    print('Schedule: $sortedFields');
+                    int startIndex = sortedFields.indexOf(origin);
+                    int endIndex = sortedFields.indexOf(destination);
+                    if (startIndex != -1 && endIndex != -1) {
+                      valuesBetween =
+                          sortedFields.sublist(startIndex + 1, endIndex + 1);
+                      print(
+                          'Field values between origin and destination: $valuesBetween');
+                    } else {
+                      print('Origin and/or destination not found in fields.');
+                    }
+
+                    //LatLng originStr = LatLng(8.5186, 76.9875);
                     final travelTime = await directionsService
                         .getTravelTimeWithTrafficAndWaypoints(
                             origin, // origin
                             destination, // destination
-                            [
-                          'Palayam,KL',
-                        ]);
+                            valuesBetween);
                     print('Travel time: ${travelTime ~/ 60} minutes');
                     showReview(context, travelTime);
                   } catch (e) {
-                    print("error calculating eta $e");
+                    print("Error calculating ETA: $e");
+                    throw Exception("Error calculating ETA: $e");
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -402,7 +442,7 @@ showReview(context, review) {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
             child: Container(
-                height: 350.0,
+                height: 320.0,
                 width: 200.0,
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
@@ -450,20 +490,21 @@ showReview(context, review) {
                           ),
                         )),
                     SizedBox(height: 15.0),
-                    FlatButton(
-                        child: Center(
-                          child: Text(
-                            'OKAY',
-                            style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontSize: 14.0,
-                                color: Color.fromARGB(255, 117, 154, 255)),
-                          ),
+                    MaterialButton(
+                      child: Center(
+                        child: Text(
+                          'OKAY',
+                          style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 14.0,
+                              color: Color.fromARGB(255, 117, 154, 255)),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        color: Colors.transparent)
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      //color: Colors.white
+                    )
                   ],
                 )));
       });
