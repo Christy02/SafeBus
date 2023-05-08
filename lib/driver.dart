@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:safebus/bus.dart';
 import 'package:safebus/chat.dart';
+import 'package:safebus/gps.dart';
+import 'package:safebus/stream.dart';
+
 import 'attendance.dart';
-import 'login.dart';
 import 'notice.dart';
 import 'package:http/http.dart' as http;
 
@@ -74,6 +76,17 @@ class _DriverPageState extends State<DriverPage> {
           title: const Text('Driver'),
           backgroundColor: Color.fromARGB(255, 117, 154, 255),
           actions: <Widget>[
+            IconButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const GPSPage()),
+                  );
+                },
+                icon: const Icon(
+                  Icons.add_location_alt_sharp,
+                  size: 30,
+                )),
             IconButton(
                 onPressed: () async {
                   Navigator.push(
@@ -193,6 +206,41 @@ class _DriverPageState extends State<DriverPage> {
                     },
                     child: const Text(
                       'Mark Attendance',
+                      style: TextStyle(
+                        letterSpacing: 1.5,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'OpenSans',
+                        color: Color.fromARGB(255, 117, 154, 255),
+                      ),
+                    )),
+              ),
+              const SizedBox(
+                height: 70,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 25,
+                  right: 25,
+                ),
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.white70,
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 30,
+                          horizontal: 75,
+                        )),
+                    onPressed: () {
+                      Route route =
+                          MaterialPageRoute(builder: (context) => StreamPage());
+                      Navigator.push(context, route);
+                    },
+                    child: const Text(
+                      'Live-streaming',
                       style: TextStyle(
                         letterSpacing: 1.5,
                         fontSize: 18.0,

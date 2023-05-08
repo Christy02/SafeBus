@@ -42,8 +42,13 @@ dependencies:
   firebase_messaging: ^14.3.0
   flutter_local_notifications: ^8.2.0
   get: ^4.6.5
-  http:
+  location: ^4.4.0
+  app_settings: ^4.1.6
+  permission_handler: ^10.0.0
+  http: 
+  zego_uikit_prebuilt_live_streaming: ^2.3.0
 
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
