@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:safebus/chat.dart';
 import 'package:safebus/location.dart';
 import 'package:safebus/notice.dart';
+import 'package:safebus/stream.dart';
 
 class ParentPage extends StatefulWidget {
   const ParentPage({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class ParentPage extends StatefulWidget {
 class _ParentPageState extends State<ParentPage> {
   String? _deviceToken;
   String? _userId;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -54,6 +56,18 @@ class _ParentPageState extends State<ParentPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Parent'),
+        backgroundColor: Color.fromARGB(255, 117, 154, 255),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Route route = MaterialPageRoute(
+              builder: (context) => StreamPage(
+                    user: '_auth.currentUser?.email',
+                    isHost: false,
+                  ));
+          Navigator.push(context, route);
+        },
+        child: const Icon(Icons.videocam, size: 30),
         backgroundColor: Color.fromARGB(255, 117, 154, 255),
       ),
       body: Column(

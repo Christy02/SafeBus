@@ -4,10 +4,13 @@ import 'dart:math';
 import 'dart:ui';
 
 class StreamPage extends StatelessWidget {
-  final String user = 'Conductor';
-  final bool isHost = true;
-  const StreamPage({Key? key}) : super(key: key);
-
+  final String user;
+  final bool isHost;
+  const StreamPage({
+    Key? key,
+    required this.user,
+    required this.isHost,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SafeArea(

@@ -235,8 +235,11 @@ class _DriverPageState extends State<DriverPage> {
                           horizontal: 75,
                         )),
                     onPressed: () {
-                      Route route =
-                          MaterialPageRoute(builder: (context) => StreamPage());
+                      Route route = MaterialPageRoute(
+                          builder: (context) => StreamPage(
+                                user: 'Conductor',
+                                isHost: true,
+                              ));
                       Navigator.push(context, route);
                     },
                     child: const Text(
