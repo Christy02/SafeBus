@@ -30,7 +30,7 @@ class _FireMapState extends State<FireMap> {
     location.enableBackgroundMode(enable: true);
     return Scaffold(
         appBar: AppBar(
-          title: const Text("DRIVER GPS"),
+          title: const Text("Driver GPS"),
           backgroundColor: Color.fromARGB(255, 117, 154, 255),
         ),
         body: Container(

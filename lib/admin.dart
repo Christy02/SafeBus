@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:safebus/bus.dart';
 import 'package:safebus/location.dart';
+import 'package:safebus/report.dart';
 import 'package:safebus/stream.dart';
 import 'package:safebus/writenotice.dart';
 
@@ -82,6 +83,23 @@ class _AdminPageState extends State<AdminPage> {
             icon: Icon(Icons.edit_note_outlined),
             label: Text(
               'Bus Report        ',
+              style: TextStyle(fontSize: 18),
+            ),
+            style: ElevatedButton.styleFrom(
+              primary: Color.fromARGB(255, 116, 154, 255),
+              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 60),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ReportPage()),
+              );
+            },
+            icon: Icon(Icons.manage_accounts),
+            label: Text(
+              'Driver Report     ',
               style: TextStyle(fontSize: 18),
             ),
             style: ElevatedButton.styleFrom(
