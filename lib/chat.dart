@@ -105,7 +105,11 @@ class _ChatScreenState extends State<ChatScreen> {
     String date =
         '${dateTime.day}.${dateTime.month}.${dateTime.year}   ${dateTime.hour}:${dateTime.minute}';
 
-    String name = user.split('@')[0];
+    String name;
+    if (user == 'driver19@gmail.com')
+      name = 'Conductor';
+    else
+      name = user.split('@')[0];
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
       child: Column(

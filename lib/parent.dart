@@ -60,9 +60,12 @@ class _ParentPageState extends State<ParentPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          final currentUser = FirebaseAuth.instance.currentUser;
+          final String uid = currentUser!.email as String;
+          String name = uid.split('@')[0];
           Route route = MaterialPageRoute(
               builder: (context) => StreamPage(
-                    user: '_auth.currentUser?.email',
+                    user: name,
                     isHost: false,
                   ));
           Navigator.push(context, route);

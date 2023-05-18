@@ -80,8 +80,8 @@ class _LocationPageState extends State<LocationPage> {
         markerId: MarkerId('myMarker'),
         position: LatLng(8.4705, 76.9794),
         infoWindow: InfoWindow(
-          title: 'SCTCE',
-          snippet: 'college',
+          title: 'BUS',
+          snippet: 'current location',
         ),
         icon: BitmapDescriptor.defaultMarker,
       ),

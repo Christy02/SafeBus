@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:safebus/bus.dart';
 import 'package:safebus/location.dart';
+import 'package:safebus/stream.dart';
 import 'package:safebus/writenotice.dart';
 
 class AdminPage extends StatefulWidget {
@@ -29,29 +31,74 @@ class _AdminPageState extends State<AdminPage> {
       ),
       body: Column(
         children: <Widget>[
-          Container(
-            height: 300,
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(25),
-            child: ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LocationPage()),
-                );
-              },
-              icon: Icon(Icons.location_pin),
-              label: Text(
-                'View live-location',
-                style: TextStyle(fontSize: 18),
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(255, 116, 154, 255),
-                padding: EdgeInsets.symmetric(vertical: 25, horizontal: 60),
-              ),
+          SizedBox(
+            width: 25,
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LocationPage()),
+              );
+            },
+            icon: Icon(Icons.location_pin),
+            label: Text(
+              'View live-location',
+              style: TextStyle(fontSize: 18),
             ),
-          )
-        ],
+            style: ElevatedButton.styleFrom(
+              primary: Color.fromARGB(255, 116, 154, 255),
+              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 60),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const StreamPage(
+                          user: '_auth.currentUser?.email',
+                          isHost: false,
+                        )),
+              );
+            },
+            icon: Icon(Icons.videocam),
+            label: Text(
+              'View Streaming',
+              style: TextStyle(fontSize: 18),
+            ),
+            style: ElevatedButton.styleFrom(
+              primary: Color.fromARGB(255, 116, 154, 255),
+              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 60),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const BusPage()),
+              );
+            },
+            icon: Icon(Icons.edit_note_outlined),
+            label: Text(
+              'Bus Report        ',
+              style: TextStyle(fontSize: 18),
+            ),
+            style: ElevatedButton.styleFrom(
+              primary: Color.fromARGB(255, 116, 154, 255),
+              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 60),
+            ),
+          ),
+        ]
+            .map((widget) => Padding(
+                  padding: const EdgeInsets.only(
+                    left: 35,
+                    right: 35,
+                    top: 50,
+                  ),
+                  child: widget,
+                ))
+            .toList(),
       ),
     );
   }
