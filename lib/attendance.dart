@@ -105,6 +105,12 @@ class _AttendancePageState extends State<AttendancePage> {
                     });
                     if (deviceToken != null && value == true) {
                       sendNotification('Student entered', deviceToken);
+                      await FirebaseFirestore.instance
+                          .collection('current_loc')
+                          .doc('v6DWAYpFW1SJhUPCK3Lk')
+                          .update({
+                        'last_stop': busStop,
+                      });
                     } else if (deviceToken != null && value == false) {
                       sendNotification('Student exited', deviceToken);
                     }
