@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:custom_marker/marker_icon.dart';
 
 class LocationPage extends StatefulWidget {
   const LocationPage({Key? key}) : super(key: key);
@@ -65,27 +66,68 @@ class DirectionsService {
 }
 
 class _LocationPageState extends State<LocationPage> {
-  late GoogleMapController mapController;
-  final LatLng _center = const LatLng(8.4705, 76.9794);
-
-  void _onMapCreated(GoogleMapController controller) {
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  LatLng _center = LatLng(8.470654359133755, 76.97942303296959);
+  late GoogleMapController controller;
+  void initMarker(specify, specifyId) async {
+    var MarkerIdVal = specifyId;
+    final MarkerId markerId = MarkerId(MarkerIdVal);
+    final Marker marker = Marker(
+        markerId: markerId,
+        position: LatLng(specify['latitude'], specify['longitude']));
+    _center = LatLng(specify['latitude'], specify['longitude']);
     setState(() {
-      mapController = controller;
+      markers[markerId] = marker;
     });
   }
 
-  Set<Marker> _createMarker() {
-    return <Marker>[
-      Marker(
-        markerId: MarkerId('myMarker'),
-        position: LatLng(8.4705, 76.9794),
-        infoWindow: InfoWindow(
-          title: 'BUS',
-          snippet: 'current location',
-        ),
-        icon: BitmapDescriptor.defaultMarker,
-      ),
-    ].toSet();
+  void initMarkerC(specify, specifyId) async {
+    var MarkerIdVal = specifyId;
+    final MarkerId markerId = MarkerId(MarkerIdVal);
+    final Marker marker = Marker(
+        markerId: markerId,
+        icon: await MarkerIcon.downloadResizePictureCircle(
+            'https://flyclipart.com/thumb2/icon-college-students-college-education-icon-with-png-and-vector-652361.png',
+            size: 65,
+            addBorder: true,
+            borderColor: Colors.black,
+            borderSize: 9),
+        position: LatLng(specify['latitude'], specify['longitude']));
+    _center = LatLng(specify['latitude'], specify['longitude']);
+    setState(() {
+      markers[markerId] = marker;
+    });
+  }
+
+  getMarkerData() async {
+    FirebaseFirestore.instance
+        .collection('current_loc')
+        .doc('bus')
+        .snapshots()
+        .listen((MockData) {
+      for (int i = 0; i < MockData.data()!.length; i++) {
+        initMarker(MockData.data(), MockData.id);
+      }
+    });
+  }
+
+  getMarkerData1() async {
+    FirebaseFirestore.instance
+        .collection('location')
+        .doc('college')
+        .get()
+        .then((MockData) {
+      for (int i = 0; i < MockData.data()!.length; i++) {
+        initMarkerC(MockData.data(), MockData.id);
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    getMarkerData();
+    getMarkerData1();
+    super.initState();
   }
 
   final directionsService =
@@ -361,7 +403,7 @@ class _LocationPageState extends State<LocationPage> {
                     final DocumentSnapshot doc2 = await FirebaseFirestore
                         .instance
                         .collection('current_loc')
-                        .doc('v6DWAYpFW1SJhUPCK3Lk')
+                        .doc('bus')
                         .get();
 
                     final String origin = doc2['last_stop'];
@@ -421,13 +463,15 @@ class _LocationPageState extends State<LocationPage> {
         ),
       ),
       body: GoogleMap(
-        onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(
           target: _center,
           zoom: 15,
         ),
         mapType: MapType.normal,
-        markers: _createMarker(),
+        markers: Set<Marker>.of(markers.values),
+        onMapCreated: (GoogleMapController controller) async {
+          setState(() {});
+        },
       ),
     );
   }

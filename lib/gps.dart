@@ -30,7 +30,7 @@ class _FireMapState extends State<FireMap> {
     location.enableBackgroundMode(enable: true);
     return Scaffold(
         appBar: AppBar(
-          title: const Text("A Bus Location"),
+          title: const Text("Driver GPS"),
           backgroundColor: Color.fromARGB(255, 117, 154, 255),
         ),
         body: Container(
@@ -116,7 +116,7 @@ class _FireMapState extends State<FireMap> {
     }).listen((loc.LocationData currentlocation) async {
       await FirebaseFirestore.instance
           .collection('current_loc')
-          .doc('v6DWAYpFW1SJhUPCK3Lk')
+          .doc('bus')
           .set({
         'latitude': currentlocation.latitude,
         'longitude': currentlocation.longitude,
