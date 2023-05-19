@@ -43,11 +43,14 @@ dependencies:
   flutter_local_notifications: ^8.2.0
   get: ^4.6.5
   location: ^4.4.0
-  app_settings: ^4.1.6
+  app_settings: ^4.1.0
   permission_handler: ^10.0.0
   http: 
   zego_uikit_prebuilt_live_streaming: ^2.3.0
   custom_marker: ^1.0.0
+  geolocator: ^8.0.1
+  provider: ^6.0.5
+  
 
   
 dev_dependencies:
