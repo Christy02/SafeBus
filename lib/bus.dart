@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
 class BusPage extends StatefulWidget {
   @override
@@ -10,10 +11,23 @@ class BusPage extends StatefulWidget {
 class _BusPageState extends State<BusPage> {
   List<SpeedData> speedDataList = [];
 
+  Timer? timer;
+
   @override
   void initState() {
     super.initState();
-    fetchSpeedDataFromFirestore();
+    startFetchingSpeedData();
+  }
+
+  void startFetchingSpeedData() {
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      fetchSpeedDataFromFirestore();
+    });
+  }
+
+  void stopFetchingSpeedData() {
+    timer?.cancel();
+    timer = null;
   }
 
   void fetchSpeedDataFromFirestore() async {
@@ -32,10 +46,12 @@ class _BusPageState extends State<BusPage> {
         List<dynamic>? speedValues = data['speed'] as List<dynamic>?;
 
         if (speedValues != null) {
+          speedDataList.clear();
+
           for (int i = 0; i < speedValues.length; i++) {
             var speed = (speedValues[i] as num?)?.toDouble();
             if (speed != null) {
-              var time = DateTime.now().add(Duration(minutes: i));
+              var time = DateTime.now().add(Duration(seconds: i));
               var speedData = SpeedData(time, speed);
               speedDataList.add(speedData);
             }
@@ -46,6 +62,12 @@ class _BusPageState extends State<BusPage> {
         }
       }
     }
+  }
+
+  @override
+  void dispose() {
+    stopFetchingSpeedData();
+    super.dispose();
   }
 
   @override
