@@ -120,7 +120,8 @@ class _FireMapState extends State<FireMap> {
           .set({
         'latitude': currentlocation.latitude,
         'longitude': currentlocation.longitude,
-        'speed': currentlocation.speed
+        'speed': FieldValue.arrayUnion([currentlocation.speed]),
+        'time': FieldValue.serverTimestamp()
       }, SetOptions(merge: true));
     });
   }
