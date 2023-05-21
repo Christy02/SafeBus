@@ -71,6 +71,13 @@ class _FireMapState extends State<FireMap> {
                         msg: "Turn On Location",
                         backgroundColor: Color.fromARGB(255, 255, 88, 88));
                   }
+                  FirebaseFirestore.instance
+                      .collection('current_loc')
+                      .doc('bus')
+                      .update({
+                    'route_start': FieldValue.serverTimestamp(),
+                    'speed': FieldValue.delete(),
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   primary: const Color.fromARGB(255, 117, 154, 255),
@@ -83,6 +90,12 @@ class _FireMapState extends State<FireMap> {
                 onPressed: () async {
                   AppSettings.openLocationSettings();
                   _stopListening();
+                  FirebaseFirestore.instance
+                      .collection('current_loc')
+                      .doc('bus')
+                      .update({
+                    'route_end': FieldValue.serverTimestamp(),
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                     primary: Color(0xFFFF4D4D),
@@ -121,7 +134,6 @@ class _FireMapState extends State<FireMap> {
         'latitude': currentlocation.latitude,
         'longitude': currentlocation.longitude,
         'speed': FieldValue.arrayUnion([currentlocation.speed]),
-        'time': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     });
   }
