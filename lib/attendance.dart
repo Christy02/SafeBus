@@ -107,7 +107,7 @@ class _AttendancePageState extends State<AttendancePage> {
                       sendNotification('Student entered', deviceToken);
                       await FirebaseFirestore.instance
                           .collection('current_loc')
-                          .doc('v6DWAYpFW1SJhUPCK3Lk')
+                          .doc('bus')
                           .update({
                         'last_stop': busStop,
                       });
