@@ -21,6 +21,7 @@ class _ReportPageState extends State<ReportPage> {
   int overspeed = 0;
   bool isDisposed = false;
   int ragScore = 0;
+  MaterialColor color = Colors.grey;
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class _ReportPageState extends State<ReportPage> {
               var speed = (speedValues[i] as num?)?.toDouble();
               if (speed != null) {
                 var time = DateTime.now().add(Duration(seconds: i));
+                speed = speed * 3.6;
                 var speedData = SpeedData(time, speed);
                 speedDataList.add(speedData);
               }
@@ -276,10 +278,21 @@ class _ReportPageState extends State<ReportPage> {
                                 fontSize: 16.0, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 4.0),
-                          Text(
-                            '  $ragScore',
-                            style: TextStyle(fontSize: 16.0),
-                          ),
+                          Row(children: [
+                            Text(
+                              '  $ragScore ',
+                              style: TextStyle(fontSize: 16.0),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Container(
+                              color: color,
+                              height: 20,
+                              width: 30,
+                              //child: Text('____'),
+                            )
+                          ])
                         ],
                       ),
                     ),
@@ -372,13 +385,13 @@ class _ReportPageState extends State<ReportPage> {
     List<dynamic> values = snapshot.get('speed');
     for (dynamic value in values) {
       if (value > max) max = value;
-      if (value > 5) overspeed++;
+      if (value > 20) overspeed++;
       sum += value;
       count++;
     }
     average = sum / count;
-    average = double.parse(average.toStringAsFixed(3));
-    max = double.parse(max.toStringAsFixed(3));
+    average = double.parse(average.toStringAsFixed(3)) * 3.6;
+    max = double.parse(max.toStringAsFixed(3)) * 3.6;
     dist = (average * (rdur.inMinutes / 60));
     dist = double.parse(dist.toStringAsFixed(3));
   }
@@ -397,6 +410,7 @@ class _ReportPageState extends State<ReportPage> {
     int amberCount = 0;
 
     for (dynamic value in values) {
+      value = value * 3.6;
       if (value <= greenThreshold) {
         greenCount++;
       } else if (value <= amberThreshold) {
@@ -409,11 +423,14 @@ class _ReportPageState extends State<ReportPage> {
     double redPercentage = 100 - greenPercentage - amberPercentage;
 
     if (redPercentage >= 50) {
-      ragScore = 0; // Red Score
+      ragScore = 0;
+      color = Colors.red; // Red Score
     } else if (amberPercentage >= 50) {
-      ragScore = 1; // Amber Score
+      ragScore = 1;
+      color = Colors.amber; // Amber Score
     } else {
-      ragScore = 2; // Green Score
+      ragScore = 2;
+      color = Colors.green; // Green Score
     }
   }
 }
